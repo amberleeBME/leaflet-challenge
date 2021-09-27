@@ -1,4 +1,8 @@
 // API key
+
+// Significant Previous Month
+// const API_KEY = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson";
+
 // All Previous Month
 // const API_KEY = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
