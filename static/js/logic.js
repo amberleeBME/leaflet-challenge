@@ -19,7 +19,6 @@ var getColor;
 var thresholds;
 var legend;
 
-
 {// FUNCTIONS
 
     function pointToLayer(eq, coords){
@@ -71,19 +70,26 @@ var legend;
                 var mag = mags[i];
                 var place = places[i];
                 var time = times[i];
-                var mag = mags[i];
                 var depth = depths[i];
-                console.log(place);
-                L.circle(latlng[i],{
-                    weight: .5,
-                    color: 'black',
-                    fillColor: getColor(depths[i]),
-                    fillOpacity: .75,
-                    radius: mags[i]*30000
-                }).bindPopup(`<h4>Where: ${place}</h4><h4>When: ${time}</h4><h4>Magnitude: ${mag}</h4><h4>Depth: ${depth} km</h4>`).addTo(map);
+                
+                if (mag<=0){
+                    continue;
+                }else{
+                    var magScale = mag*30000;
+                    L.circle(latlng[i],{
+                        color: 'black',
+                        weight: .5,
+                        fillColor: getColor(depth),
+                        fillOpacity: .75,
+                        radius: magScale
+                    }).bindPopup(`<h4>Where: ${place}</h4><h4>When: ${time}</h4><h4>Magnitude: ${mag}</h4><h4>Depth: ${depth} km</h4>`).addTo(map);
+                }
+                
+                
             }
             console.log(depthRange);
             console.log("depths:",depths);
+            console.log("magnitudes:",mags);
             // ADD LEGEND
             legend = L.control({position: 'bottomright'});
             legend.onAdd = function(map){
