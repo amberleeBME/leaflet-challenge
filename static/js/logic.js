@@ -12,24 +12,15 @@ var earthquakesLayer;
 var getColrs;
 var depthRange;
 var streetLayer;
+var topoLayer;
 var map;
 var baseMaps;
 var getColor;
+var thresholds;
+var legend;
 
 
 {// FUNCTIONS
-    function onEachFeature(eq, layer){
-            
-        var eqGeo = eq.geometry.coordinates;
-        var eqCoord = [eqGeo[1],eqGeo[0]];
-        var eqPlace = eq.properties.place;
-        var eqTime = eq.properties.time;
-        var eqMag = eq.properties.mag;
-        depths.push(eqGeo[2]);
-        // For each earthquake, create a marker, and bind a popup with the earthquake info.
-        layer.bindPopup(`<h3>Where: ${eqPlace}</h3><h3>When: ${new Date(eqTime).toLocaleString()}</h3><h3>Magnitude: ${eqMag}</h3><h3>Depth: ${eqGeo[2]}</h3>`);
-        // return earthquakesLayer;
-    }
 
     function pointToLayer(eq, coords){
         depths.push(eq.geometry.coordinates[2]);
@@ -40,35 +31,16 @@ var getColor;
 
     }
 
-
-    function createMap(earthquakesLayer){
-
-
-        // Create an overlayMaps object to hold the bikeStations layer.
-        var overlayMaps = {
-            Earthquakes: earthquakesLayer
-        };
-        
-        L.control.layers(baseMaps, overlayMaps, {
-            collapsed: false
-        }).addTo(map);
-    }
-    function style(feature){
-        return{
-            weight: .75,
-            opacity: 1,
-            color: 'black',
-            fillOpacity: 1,
-            fillColor: getColor(feature.geometry.coordinates[2])
-        };
-    }
-    
     function createBaseMaps(){
         streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
+        topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
         baseMaps = {
-            "Street Map":streetLayer
+            "Street Map":streetLayer,
+            "Topographic Map": topoLayer
         };
         map = L.map("map", {
             center: [37.8, -96],
@@ -79,19 +51,20 @@ var getColor;
 
     {// EXECUTE
         // CREATE BASE MAPS
+        thresholds = [10,30,50,70,90];
         createBaseMaps();
 
         // GET PROMISE
         dataPromise = d3.json(API_KEY);
 
-        // FIND DEPTH/COLOR RANGE
+        // ADD MARKERS
         dataPromise.then(function(data){
             L.geoJSON(data,{
                 pointToLayer:pointToLayer
             })
             depthRange = d3.extent(depths);
-            getColor = d3.scaleThreshold().domain([0,20,40,60,80,90])
-                .range(d3.schemeRdPu[6]);
+            getColor = d3.scaleThreshold().domain(thresholds)
+                .range(d3.schemeRdPu[7]);
            
             // ADD MARKERS
             for (var i = 0; i<mags.length; i++){
@@ -105,21 +78,46 @@ var getColor;
                     weight: .5,
                     color: 'black',
                     fillColor: getColor(depths[i]),
-                    fillOpacity: 1,
+                    fillOpacity: .75,
                     radius: mags[i]*30000
                 }).bindPopup(`<h4>Where: ${place}</h4><h4>When: ${time}</h4><h4>Magnitude: ${mag}</h4><h4>Depth: ${depth} km</h4>`).addTo(map);
             }
             console.log(depthRange);
             console.log("depths:",depths);
+            // ADD LEGEND
+            legend = L.control({position: 'bottomright'});
+            legend.onAdd = function(map){
+                var div = L.DomUtil.create('div', 'info legend'),
+                    grades = [10, 10,30,50,70,90],
+                    labels = [],
+                    from, to;
+                for (var i = 0; i < grades.length; i++) {
+                    from = grades[i];
+                    to = grades[i+1];
+
+                    if (i<1){
+                        labels.push('<p><i style="background:' + getColor(from-1) + '; width: 25px;"></i> ' + ' &lt; '+
+                        from);
+                    }else{
+                        labels.push('<p><i style="background:' + getColor(from) + '; width: 25px;"></i> ' +
+                        from + (to ? ' &ndash; ' + to : '+'));
+                }}
+                div.innerHTML = labels.join('</p>');
+                return div;
+            };
             
             
+            legend.addTo(map);
         });
         
+        
+        }
+
 
         // 
         // dataPromise.then(function(data){
         //     createMarkers(data);});
         
-    }
+    
 
 }

@@ -11,7 +11,7 @@ html, body,#map {
   
   z-index: 1;
 }
-#legend {
+.legend {
   line-height: 18px;
   color: #555;
   position: absolute;
@@ -20,11 +20,28 @@ html, body,#map {
   z-index: 2;
   background-color: white;
   padding: 5px;
+  width: 100px;
+  
 }
-#legend i {
-  width: 50px;
+.legend i {
+  /* width: 100px; */
   height: 18px;
   float: left;
-  margin-right: 8px;
+  margin-right: 16px;
   opacity: 0.7;
 }
+.legend p {
+  margin: 0px;
+  width: 100%;
+  float: right;
+  
+}
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: gainsboro;
+  background: rgba(220,220,220,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  
+  }
