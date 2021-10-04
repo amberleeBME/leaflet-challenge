@@ -12,3 +12,4 @@
 // All Previous Week
 
 const API_KEY = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+const API_KEY2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
