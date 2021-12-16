@@ -1,4 +1,4 @@
-# Visualizing Data with Leaflet
+# Visualizing Earthquakes with Leaflet
 ## Objective: 
 * Obtain the "All Earthquakes from the Past 7 Days" dataset from the [United States Geological Survey (USGS) GeoJSON Feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
 * Create a map using Leaflet that plots earthquakes based on their longitude and latitude.
