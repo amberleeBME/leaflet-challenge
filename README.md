@@ -8,6 +8,6 @@
     * Earthquakes with greater depth should appear darker in color.
 
 ## Results:
-The Leaflet map can be viewed [here](https://amberleebme.github.io/leaflet-challenge/) and resembles the screenshot below.
+The Leaflet map can be viewed [here](https://amberleebme.github.io/visualizing-eathquakes) and resembles the screenshot below.
 
 ![Screenshot of Earthquake Map Created Using Leaflet](images/earthquake-map-screenshot.png)
